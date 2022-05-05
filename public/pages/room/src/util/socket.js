@@ -1,3 +1,4 @@
+// classe para gerar uma instancia de socket
 class SocketBuilder {
   constructor({ socketUrl }) {
     this.socketUrl = socketUrl
