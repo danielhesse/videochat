@@ -32,9 +32,11 @@ class Business {
       .setOnConnectionOpened(this.onPeerConnectionOpened())
       .setOnCallReceived(this.onPeerCallReceived())
       .setOnPeerStreamReceived(this.onPeerStreamReceived())
+      .setOnCallError(this.onPeerCallError())
+      .setOnCallClose(this.onPeerCallClose())
       .build()
 
-    this.addVideoStream('danielhessell')
+    this.addVideoStream(this.currentPeer.id)
   }
 
   addVideoStream(userId, stream = this.currentStream) {
@@ -56,6 +58,14 @@ class Business {
   onUserDisconnected = function () {
     return userId => {
       console.log('user disconnected!', userId)
+
+      if (this.peers.has(userId)) {
+        this.peers.get(userId).call.close()
+        this.peers.delete(userId)
+      }
+
+      this.view.setParticipants(this.peers.size)
+      this.view.removeVideoElement(userId)
     }
   }
 
@@ -88,6 +98,19 @@ class Business {
       this.peers.set(callerId, { call })
 
       this.view.setParticipants(this.peers.size)
+    }
+  }
+
+  onPeerCallError = function () {
+    return (call, error) => {
+      console.log('an call error ocurred!', error)
+      this.view.removeVideoElement(call.peer)
+    }
+  }
+
+  onPeerCallClose = function () {
+    return (call) => {
+      console.log('call closed!!', call)
     }
   }
 }
