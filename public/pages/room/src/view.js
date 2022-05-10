@@ -1,6 +1,14 @@
 class View {
   constructor() {
+    this.recorderBtn = document.getElementById("record")
+  }
 
+  onRecordClick(recorderBtn) {
+    this.recordingEnabled = false
+    return () => {
+      this.recordingEnabled = !this.recordingEnabled
+      recorderBtn.style.color = this.recordingEnabled ? 'red' : 'white'
+    }
   }
 
   createVideoElement({ muted = true, src, srcObject }) {
@@ -52,5 +60,24 @@ class View {
   removeVideoElement(id) {
     const element = document.getElementById(id)
     element.remove()
+  }
+
+  toggleRecordingButtonColor(isActive = true) {
+    this.recorderBtn.style.color = isActive ? 'red' : 'white'
+  }
+
+  onRecordClick(command) {
+    this.recordingEnabled = false
+    return () => {
+      const isActive = this.recordingEnabled = !this.recordingEnabled
+
+      command(this.recordingEnabled)
+
+      this.toggleRecordingButtonColor(isActive)
+    }
+  }
+
+  configureRecordButton(command) {
+    this.recorderBtn.addEventListener("click", this.onRecordClick(command))
   }
 }
