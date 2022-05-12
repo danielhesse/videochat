@@ -6,7 +6,7 @@ const onload = () => {
   // const recorderBtn = document.getElementById('record')
   // recorderBtn.addEventListener('click', recordClick(recorderBtn))
 
-  const socketUrl = 'http://localhost:3000'
+  const socketUrl = 'https://socket-server-videochat.up.railway.app/'
   const socketBuilder = new SocketBuilder({ socketUrl })
 
   const peerConfig = Object.values({

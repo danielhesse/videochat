@@ -2,7 +2,7 @@
   "name": "videochat",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.html",
   "dependencies": {
     "http-server": "0.12.3"
   },
