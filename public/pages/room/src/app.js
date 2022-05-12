@@ -12,8 +12,10 @@ const onload = () => {
   const peerConfig = Object.values({
     id: undefined,
     config: {
-      port: 9000,
-      host: 'localhost',
+      host: "peer-server-videochat.up.railway.app",
+      secure: true,
+      // port: 9000,
+      // host: 'localhost',
       path: '/'
     }
   })

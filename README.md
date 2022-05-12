@@ -1,4 +1,4 @@
-# Projeto base da JS Expert Week 2.0
+# Videochat
 
 - Acesse o [home](./pages/home/index.html) para acessar a home page
 - Acesse o [room](./pages/room/index.html) uma room específica
