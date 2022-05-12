@@ -22,6 +22,7 @@ class Business {
 
   async _init() {
     this.view.configureRecordButton(this.onRecordPressed.bind(this))
+    this.view.configureLeaveButton(this.onLeavePressed.bind(this))
 
     this.currentStream = await this.media.getCamera()
 
@@ -50,7 +51,7 @@ class Business {
       recorderInstance.startRecording()
     }
 
-    const isCurrentId = false
+    const isCurrentId = userId === this.currentPeer.id
     this.view.renderVideo({
       userId,
       stream,
@@ -75,6 +76,7 @@ class Business {
       }
 
       this.view.setParticipants(this.peers.size)
+      this.stopRecording(userId)
       this.view.removeVideoElement(userId)
     }
   }
@@ -94,16 +96,23 @@ class Business {
     }
   }
 
-  onPeerCallReceived = function () {
+  onPeerCallReceived() {
     return call => {
       console.log('answering call', call)
       call.answer(this.currentStream)
     }
   }
 
-  onPeerStreamReceived = function () {
+  onPeerStreamReceived() {
     return (call, stream) => {
       const callerId = call.peer
+
+      if (this.peers.has(callerId)) {
+        console.log('calling twice, ignoring second call...', callerId)
+
+        return;
+      }
+
       this.addVideoStream(callerId, stream)
       this.peers.set(callerId, { call })
 
@@ -111,14 +120,14 @@ class Business {
     }
   }
 
-  onPeerCallError = function () {
+  onPeerCallError() {
     return (call, error) => {
       console.log('an call error ocurred!', error)
       this.view.removeVideoElement(call.peer)
     }
   }
 
-  onPeerCallClose = function () {
+  onPeerCallClose() {
     return (call) => {
       console.log('call closed!!', call)
     }
@@ -154,6 +163,21 @@ class Business {
       if (!isRecordingActive) continue;
 
       await rec.stopRecording()
+
+      this.playRecordings(key)
     }
+  }
+
+  playRecordings(userId) {
+    const user = this.usersRecordings.get(userId)
+    const videoUrls = user.getAllVideoUrls()
+
+    videoUrls.map(url => {
+      this.view.renderVideo({ url, userId })
+    })
+  }
+
+  onLeavePressed() {
+    this.usersRecordings.forEach((value, key) => value.download())
   }
 }
